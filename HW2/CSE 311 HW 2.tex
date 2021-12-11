@@ -1,0 +1,243 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath, amsfonts, amsthm, amssymb}  % Some math symbols
+\usepackage[utf8x]{inputenc}
+\usepackage{fullpage}
+\usepackage[x11names, rgb]{xcolor}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{etoolbox}
+\usepackage{enumerate}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{lipsum}
+\usepackage{sectsty}
+\usepackage{verbatim}
+\usetikzlibrary{decorations,arrows,shapes}
+
+%% Define the title contents
+\title{CSE 311 - HW 1}
+\author{Eric Boris \newline with Maxime Sutters, Brittan Robinett, Micah Witthaus, Alyssa Cote, Ardi Madadi, Alexander Ayres}
+\date{October 2019}
+
+%% Left align the title 
+\makeatletter
+\renewcommand{\maketitle}{\bgroup\setlength{\parindent}{0pt}
+\begin{flushleft}
+  \textbf{\@title}
+
+  \@author
+  
+  \@date
+\end{flushleft}\egroup
+}
+\makeatother
+
+%% Set the size of the section header
+\sectionfont{\fontsize{11}{12}\selectfont}
+
+%% Set the size and format of the subsection header
+\subsectionfont{\fontsize{11}{12}\selectfont}
+\renewcommand{\thesubsection}{\thesection (\alph{subsection})}
+
+%% Define Real and Rational numbers symbol
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+
+%%--- Begin the Document ---%%
+
+\begin{document}
+\maketitle
+
+\section{A Bit Samey} %% Problem 1
+\subsection{} %% 1.a
+\begin{align*}
+	p \land (p \rightarrow q) &\equiv p \land q \\
+	p \land (\neg{p} \lor q) &\equiv p \land q \tag*{Law of Implication} \\
+	p \land (q \land \neg{p}) &\equiv p \land q \tag*{Commutativity} \\
+	(q \land \neg{p}) \land p  &\equiv p \land q \tag*{Commutativity} \\
+	q \land p  &\equiv p \land q \tag*{Absorbtion} \\
+	p \land q  &\equiv p \land q \tag*{Commutativity} \\
+\end{align*}
+
+\subsection{} %% 1.b
+\begin{align*}
+	((p \land q) \lor (p \rightarrow (\neg{p} \land r))) \lor p \equiv T \\
+	((p \land q) \lor (\neg{p} \lor (\neg{p} \land r))) \lor p \equiv T \tag*{Law of Implication} \\
+	p \lor ((p \land q) \lor (\neg{p} \lor (\neg{p} \land r))) \equiv T \tag*{Commutativity} \\
+	p \lor ((\neg{p} \lor (\neg{p} \land r)) \lor (p \land q)) \equiv T \tag*{Commutativity} \\
+	p \lor ((\neg{p} \lor \neg{(p \lor \neg{r})}) \lor (p \land q)) \equiv T \tag*{De Morgan's} \\
+	p \lor (\neg{(p \land (p \lor \neg{r}))} \lor (p \land q)) \equiv T \tag*{De Morgan's} \\
+	p \lor \neg{((p \land (p \lor \neg{r})) \land \neg{(p \land q)})} \equiv T \tag*{De Morgan's} \\
+	p \lor \neg{((p) \land \neg{(p \land q)})} \equiv T \tag*{Absorbtion} \\
+	p \lor \neg{\neg{(\neg{p} \lor (p \land q))}} \equiv T \tag*{De Morgan's} \\
+	p \lor (\neg{p} \lor (p \land q)) \equiv T \tag*{Double Negation} \\
+	(p \lor \neg{p}) \lor (p \land q) \equiv T \tag*{Associativity} \\
+	(T) \lor (p \land q) \equiv T \tag*{Negation} \\
+	(p \land q) \lor T \equiv T \tag*{Commutativity} \\
+	T \equiv T \tag*{Domination} \\
+\end{align*}
+
+\subsection{} %% 1.c
+\begin{align*}
+	p \rightarrow (q \rightarrow r) &\equiv q \rightarrow (p \rightarrow r) \\
+	p \rightarrow (\neg{q} \lor r) &\equiv q \rightarrow (\neg{p} \lor r) \tag*{Law of Implication x2}\\
+	\neg{p} \lor (\neg{q} \lor r) &\equiv \neg{q} \lor (\neg{p} \lor r) \tag*{Law of Implication x2}\\
+	(\neg{p} \lor \neg{q}) \lor r &\equiv (\neg{q} \lor \neg{p}) \lor r \tag*{Associativity}\\
+	(\neg{p} \lor \neg{q}) \lor r &\equiv (\neg{p} \lor \neg{q}) \lor r \tag*{Commutativity}\\
+\end{align*}
+
+\section{Two of a Kind} %% Problem 2
+\subsection{} %% 2.a
+\begin{align*}
+	p &:= (X = 1) \\
+	q &:= (Y = 1) \\
+	r &:= (Z = 1) \\
+	&= \neg{((\neg{p} \lor q) \land (\neg{r} \lor \neg{q}))} \lor (\neg{r} \lor \neg{p}) \\
+\end{align*}
+
+\subsection{} %% 2.b
+\begin{align*}
+&= \neg{((\neg{p} \lor q) \land (\neg{r} \lor \neg{q}))} \lor (\neg{r} \lor \neg{p}) \\
+&= (\neg{(\neg{p} \lor q)} \lor \neg{(\neg{r} \lor \neg{q})}) \lor (\neg{r} \lor \neg{p}) \tag*{De Morgan's} \\
+&= ((\neg{\neg{p}} \land \neg{q}) \lor (\neg{\neg{r}} \land \neg{\neg{q}})) \lor (\neg{r} \lor \neg{p}) \tag*{De Morgan's x2} \\
+&= ((p \land \neg{q}) \lor (r \land q)) \lor (\neg{r} \lor \neg{p}) \tag*{Double Negation x3} \\
+&= ((\neg{q} \land p) \lor (q \land r)) \lor (\neg{r} \lor \neg{p}) \tag*{Commutativity x2} \\
+&= ((q \land r) \lor (\neg{q} \land p)) \lor (\neg{r} \lor \neg{p}) \tag*{Commutativity x2} \\
+&= ((q \lor p) \land (\neg{q} \lor r)) \lor (\neg{r} \lor \neg{p}) \tag*{Factoring} \\
+&= (\neg{r} \lor \neg{p}) \lor ((q \lor p) \land (\neg{q} \lor r))  \tag*{Commutativity} \\
+&= ((\neg{r} \lor \neg{p}) \lor (q \lor p)) \land ((\neg{r} \lor \neg{p}) \lor (\neg{q} \lor r)) \tag*{Distributitive} \\
+&= ((\neg{r} \lor \neg{p}) \lor (q \lor p)) \land ((\neg{p} \lor \neg{r}) \lor (\neg{q} \lor r)) \tag*{Commutativity} \\
+&= (\neg{r} \lor (\neg{p} \lor q) \lor p) \land (\neg{p} \lor (\neg{r} \lor \neg{q}) \lor r) \tag*{Associativity x2} \\
+&= (\neg{r} \lor (q \lor \neg{p}) \lor p) \land (\neg{p} \lor (\neg{q} \lor \neg{r}) \lor r) \tag*{Commutativity x2} \\
+&= ((\neg{r} \lor q) \lor (\neg{p} \lor p)) \land ((\neg{p} \lor \neg{q}) \lor (\neg{r} \lor r)) \tag*{Associativity x2} \\
+&= ((\neg{r} \lor q) \lor (p \lor \neg{p})) \land ((\neg{p} \lor \neg{q}) \lor (r \lor \neg{r})) \tag*{Commutativity x2} \\
+&= ((\neg{r} \lor q) \lor (T)) \land ((\neg{p} \lor \neg{q}) \lor (T)) \tag*{Negation x2} \\
+&= (T) \land (T) \tag*{Domination x2} \\
+&= T \tag*{Tautology} \\
+\end{align*}
+
+\subsection{} %% 2.c
+We've shown that the propositional equation is a tautology the equivalent of which in boolean algebra is a 1 in all cases.  
+
+\section{One-Two Punch} %% Problem 3
+\subsection{} %% 3.a
+\begin{center}
+\begin{tabular}{ c|ccc|c|cc|cc|cc } 
+	& $d_2$ & $d_1$ & $d_0$ & L & $s_1$ & $s_0$ & $MIN_{s_1}$ & $MAX_{s_1}$ & $MIN_{s_0}$ & $MAX_{s_0}$ \\
+	\hline
+	SUN & 0 & 0 & 0 & 0 & 0 & 1 & & $d_2+d_1+d_0+L$ & $d'_2d'_1d'_0L'$ & \\
+	SUN & 0 & 0 & 0 & 1 & 1 & 1 & $d'_2d'_1d'_0L$ & & $d'_2d'_1d'_0L$ & \\
+	MON & 0 & 0 & 1 & 0 & 0 & 1 & & $d_2+d_1+d'_0+L$ & $d'_2d'_1d_0L'$ & \\
+	MON & 0 & 0 & 1 & 1 & 1 & 1 & $d'_2d'_1d_0L$ & & $d'_2d'_1d_0L$ & \\
+	TUE & 0 & 1 & 0 & 0 & 0 & 1 & & $d_2+d'_1+d_0+L$ & $d'_2d_1d'_0L'$ & \\
+	TUE & 0 & 1 & 0 & 1 & 1 & 0 & $d'_2d_1d'_0L$ & & & $d_2+d'_1+d_0+L'$ \\
+	WED & 0 & 1 & 1 & 0 & 0 & 1 & & $d_2+d'_1+d'_0+L$ & $d'_2d_1d_0L'$ & \\
+	WED & 0 & 1 & 1 & 1 & 1 & 0 & $d'_2d_1d_0L$ & & & $d_2+d'_1+d'_0+L'$ \\
+	THU & 1 & 0 & 0 & - & 0 & 1 & & $d'_2+d_1+d_0$& $d_2d'_1d'_0$ & \\
+	FRI & 1 & 0 & 1 & 0 & 0 & 0 & & $d'_2+d_1+d'_0+L$ & & $d'_2+d_1+d'_0+L$ \\
+	FRI & 1 & 0 & 1 & 1 & 0 & 1 & & $d'_2+d_1+d_0+L$ & $d_2d'_1d_0L$ & \\
+	SAT & 1 & 1 & 0 & - & 0 & 0 & & $d'_2+d'_1+d_0$ & & $d'_2+d'_1+d_0$ \\
+\end{tabular}
+\end{center}
+\subsection{} %% 3.b
+$s_1$ in Sums of Products form:
+$(d'_2d'_1d'_0L) + (d'_2d'_1d_0L) + (d'_2d_1d'_0L) + (d'_2d_1d_0L)$
+
+\subsection{} %% 3.c
+$s_0$ in Products of Sums form:
+$(d_2+d'_1+d_0+L') * (d_2+d'_1+d'_0+L') * (d'_2+d_1+d'_0+L) * (d'_2+d'_1+d_0)$
+
+\section{Pardon My French} %% Problem 4
+\begin{align*}
+	\text{Domain} &:= \text{People in France.} \\
+	\text{Francophone}(x) &:= \text{x is a French speaker.} \\
+	\text{Anglophone}(x) &:= \text{x is an English speaker.} \\
+	\text{French}(x) &:= \text{x is French.} \\
+	\text{Parisian}(x) &:= \text{x lives in Paris.} \\
+	\text{Tourist}(x) &:= \text{x is a tourist} \\
+\end{align*}
+\subsection{} %% 4.a 
+Everyone in Paris is either French or a tourist. 
+
+\subsection{} %% 4.b 
+Some people in France are English speaking tourists who don't speak French. 
+
+\subsection{} %% 4.c 
+Everyone in Paris that's not a tourist is French but not every French person lives in Paris or is a tourist. 
+
+\subsection{} %% 4.d
+No one who lives in Paris is also a tourist who doesn't speak French or English. 
+
+\section{A Lot to Unpack There} %% Problem 5
+\begin{align*}
+	\text{Domain} &:= \text{People on vacation and their belongings.} \\
+	V(x) &:= \text{Vacationer x is a person on vacation.} \\
+	B(x) &:= \text{Belonging x is a belonging of some person.} \\
+	P(x, y) &:= \text{Vacationer x packed belonging y to bring with them on vacation.} \\
+	I(x, y) &:= \text{Identical is true if and only if x and y are the same person or object.} \\
+\end{align*}
+\subsection{} %% 5.a
+$\forall y(P(x,y) \rightarrow B(y))$
+
+\subsection{} %% 5.b
+$(B(x) \land P(Kim, x)) \land (B(y) \land P(Kim, y)) \land (I(x, y) \land \neg{(x = y)}) \land \neg{\exists} z (B(z) \land P(Kanye, z) \land (I(x, z))) \lor I(y, z)))$
+
+\subsection{} %% 5.c
+$\neg{\exists} x \neg{\exists} y ((V(a) \land B(x) \land P(a, x)) \land (V(b) \land B(y) \land P(b, y)) \land I(x, y))$ \\
+
+\subsection{} %% 5.d
+$\exists a(V(a) \land (B(x) \land P(a, x)) \land (B(y) \land P(a, y)) \land \neg{\exists} z (B(z) \land P(a, z)))$
+
+\section{Beyond Compare} %% Problem 6
+%% https://math.stackexchange.com/questions/1818625/why-is-forall-x-px-implies-qx-not-equiv-forall-x-px-implies-fo/1818635
+
+Interpretation of $\forall x(P(x) \rightarrow Q(x))$ is "all x must be Q(x) if that x is P(x)."
+\\
+\\
+Interpretation of $(\forall xP(x)) \rightarrow (\forall xQ(x))$ is "only if all x are P(x) then all x are Q(x)."
+
+\begin{center}
+\begin{tabular}{ c|c|c|c } 
+	& Domain & P(x) & Q(x) \\
+	\hline
+	1. & $x \in \{\text{Mammals}\}$ & x is a dog. & x is a cat. \\
+	2. & $x \in \{\text{Foods}\}$ & x is a fruit & x is a vegetable. \\
+	3. & $x \in \R$ & $x = \frac{1}{3}$ & $x \in \N$ \\
+	4. & $x \in \{\text{Animals}\}$ & x is a dog. & x is a mammal. \\
+	5. & $x \in \{\text{Transportation}\}$ & x is a car. & x has wheels. \\
+	6. & $x \in \R$ & $x \in \N$ & $x \in \Z$ \\
+\end{tabular}
+\end{center}
+
+\subsection{} %% 6.a
+For the two statements not to be equivalent the left side can be false and the right side can be true. The left side can be false when the sets, P(x) and Q(x) share no common members. Similarly, the right side will be true when P(x) is false, suggesting that the sets P(x) and Q(x) are completely disjoint. Examples from the above table are 1, 2, and 3. Looking at 1, $\forall x(P(x) \rightarrow Q(x))$ the left side is false when P(x) "x is a dog" is true and Q(x) "x is a cat" is true.  Continuing, $(\forall xP(x)) \rightarrow (\forall xQ(x))$ is true when P(x) "all mammls are dogs" is false. Thus, these propositions show the two statements are not equivalent. 
+
+\subsection{} %% 6.b
+For the two statements to be equivalent both sides must be true or false together. Thus, the left side is true unless P(x) is true and Q(x) is false and the right side is true unless all x are P(x) but there is an x that's not a Q(x). This suggests that P(x) is a subset of Q(x). Examples from the above table are 4, 5, and 6. With $\forall x(P(x) \rightarrow Q(x))$ Q(x) will never be false when P(x) is true because all dogs are mammals. Similarly, $(\forall xP(x)) \rightarrow (\forall xQ(x))$, so for all the cases  where x is a dog x is also a mammal.
+
+\subsection{} %% 6.c
+The logical connection is that the second compound proposition implies the first. That is because the second proposition is either a subset or a disjoint in relation to the first there is no case where it can be false that the first true. 
+
+\section{Shiver Me Timbers} %% Problem 7
+We consider the problem by beginning with the simplest situation and building from there. 
+
+\subsection{Only Emily}
+If only Emily remains then the problem is trivial and Emily keeps all the coins to herself. She will vote to reach this state, however, this will never happen. 
+
+\subsection{Danielle and Emily}
+If Danielle becomes the chief then Emily will vote against her, regardless of her proposal, and be the only pirate left. Because Danielle knows that she will be thrown overboard if she becomes chief so she will vote to prevent this from happening.
+
+\subsection{Carla, Danielle, and Emily}
+If Carla becomes chief she knows that Emily will vote against any proposal she makes to become chief herself so Carla will not give any coins to her. Carla also knows that Danielle will prioritize not becoming chief over receiving a payout so Carla will not give her any coins either. She will keep the 100 coins to herself in this case and Danielle and Emily will be content with 0 each. This would be a stable equilibrium, however, this state will not be reached. 
+
+\subsection{Brenda, Carla, Danielle, and Emily}
+If Brenda becomes chief she knows, by considering the previously examined states, that regardless of payout Carla will always vote against her. To prevent that from happening she will pay Danielle and Emily 1 coin each (their maximum expected payout so far), earn their votes, and keep 98 coins for herself. However, this state will also never be reached. 
+
+\subsection{Ann, Brenda, Carla, Danielle, and Emily}
+With Ann as chief she knows that unless she pays Brenda 99 coins she will not earn her vote. But, that's not enough to earn the votes of anyone else so Ann will not try to earn Brenda's vote. Further, she knows that Carla will always vote against her too because her expected payout can also be higher. Ann only needs two votes so she will focus on earning those of Danielle and Emily. To do so, she only needs to pay out Danielle and Emily 2 coins each because that is their highest expected payouts. This will earn for Ann Danielle and Emily's vote at the least payout for Ann, maximize the payout for Danielle and Emily, and ignore Brenda and Carla's votes against. Thus, the first scenario is at stable equilibrium and will never proceed to later scenarios.
+
+
+\end{document}

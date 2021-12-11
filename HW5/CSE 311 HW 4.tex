@@ -1,0 +1,237 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath, amsfonts, amsthm, amssymb}  % Some math symbols
+\usepackage[utf8x]{inputenc}
+\usepackage{fullpage}
+\usepackage[x11names, rgb]{xcolor}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{etoolbox}
+\usepackage{enumerate}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{lipsum}
+\usepackage{sectsty}
+\usepackage{verbatim}
+\usetikzlibrary{decorations,arrows,shapes}
+
+%% Define the title contents
+\title{CSE 311 - HW 5}
+\author{Eric Boris, \\ Ardi Madadi, Estevan Seyfried, Sam Vanderlinda, Wendy Jiang}
+\date{October 2019}
+
+%% Left align the title 
+\makeatletter
+\renewcommand{\maketitle}{\bgroup\setlength{\parindent}{0pt}
+\begin{flushleft}
+  \textbf{\@title}
+
+  \@author
+  
+  \@date
+\end{flushleft}\egroup
+}
+\makeatother
+
+%% Set the size of the section header
+\sectionfont{\fontsize{11}{12}\selectfont}
+
+%% Set the size and format of the subsection header
+\subsectionfont{\fontsize{11}{12}\selectfont}
+\renewcommand{\thesubsection}{\thesection (\alph{subsection})}
+
+%% Set the size and format of the subsubsection header
+\subsubsectionfont{\fontsize{9}{10}\selectfont}
+\renewcommand{\thesubsubsection}{\roman{subsubsection}}
+
+%% Define Real and Rational numbers symbol
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+
+%% Redefine rightarrow to imp
+\def\imp{\rightarrow}
+
+%% Redefine overline to ol
+\def\ol{\overline}
+
+%% Redefine leftrightarrow to lra
+\def\lra{\leftrightarrow}
+
+% Redefine setminus to sm
+\def\sm{\setminus}
+
+%% Define a nested environment using level for formal proof
+\newenvironment{level}%
+{\addtolength{\itemindent}{2em}}%
+{\addtolength{\itemindent}{-2em}}
+
+%% Set enumerate sub list to use numbers instead of letters
+\setlist[enumerate]{label*=\arabic*.}
+
+\begin{comment}
+%% Remove the QED Tombstone symbol from the end of proofs
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{\par
+%  \pushQED{\qed}% <--- remove the QED business
+  \normalfont \topsep6\p@\@plus6\p@\relax
+  \trivlist
+  \item[\hskip\labelsep
+        \itshape
+    #1\@addpunct{.}]\ignorespaces
+}{%
+%  \popQED% <--- remove the QED business
+  \endtrivlist\@endpefalse
+}
+\renewcommand\qedhere{} % to ensure code portability
+\makeatother
+\end{comment}
+
+%%--- Begin the Document ---%%
+
+\begin{document}
+\maketitle
+
+\section{A Modding Acquaintance} %% Problem 1
+\subsection{} %% 1.a
+Equations with recursive calls:
+\begin{alignat*}{3}
+	\text{gcd}(44, 180) &= \text{gcd}(180, 44\text{mod}180) &&= \text{gcd}(180, 44) \\
+	&= \text{gcd}(44, 180\text{mod}44) &&= \text{gcd}(44, 4) \\
+	&= \text{gcd}(4, 44\text{mod}4) &&= \text{gcd}(4, 0) \\
+	&= 4
+\end{alignat*}
+Tableau form:
+\begin{align*}
+	44 &= 0 * 180 + 44 \\
+	180 &= 4 * 44 + 4 \\
+	44 &= 11 * 4 + 0 \\
+\end{align*}
+\subsection{} %% 1.b
+Equations with recursive calls:
+\begin{alignat*}{3}
+	\text{gcd}(340, 178) &= \text{gcd}(178, 340\text{mod}178) &&= \text{gcd}(178, 162) \\
+	&= \text{gcd}(162, 178\text{mod}162) &&= \text{gcd}(162, 16) \\
+	&= \text{gcd}(16, 162\text{mod}16) &&= \text{gcd}(16, 2) \\
+	&= \text{gcd}(2, 16\text{mod}2) &&= \text{gcd}(2, 0) \\
+	&= 2
+\end{alignat*}
+Tableau form:
+\begin{align*}
+	340 &= 1 * 178 + 162 \\
+	178 &= 1 * 162 + 16 \\
+	162 &= 10 * 16 + 2 \\
+	16 &= 8 * 2 + 0 \\	
+\end{align*}
+\subsection{} %% 1.c
+Equations with recursive calls:\\
+(If a is a positive integer, gcd(a,0)=a.)
+\begin{align*}
+	\text{gcd}(2^{32}-1, 2^0-1) &= 2^{32}-1
+\end{align*}
+Tableau form:
+\begin{align*}
+	2^{32}-1 &= NA * 0 + 2^{32}-1 \\
+\end{align*}
+
+\section{Mod Squad} %% Problem 2
+\subsection{} %% 2.a
+Find the gcd(15, 103) in tableau form and solve each equation for $r$ such that $r = a - q * b$
+\begin{alignat*}{3}
+	15 &= 0 * 103 + 15 && \\
+	103 &= 6 * 15 + 13  &&== 103 - 6 * 15 = 13 \\
+	15 &= 1 * 13 + 2 &&== 15 - 1 * 13 = 2 \\
+	13 &= 6 * 2 + 1 &&== 13 - 6 * 2 = 1\\
+\end{alignat*}
+Use backward substitution to solve for gcd$(a, b) = sa + tb$
+\begin{align*}
+	13 - 6 * 2 &= 1 \\
+	13 - 6 * (15 - 1 * 13) &= 1 \\
+	13 - 6(15) + 6(13) &= 1 \\
+	7(13) - 6(15) &= 1 \\
+	7(103 - 6 * 15) - 6(15) &= 1 \\
+	7(103) - 42(15) - 6(15) &= 1 \\
+	7(103) - 48(15) &= 1 \\
+	103(7) + 15(-48) &= 1 \\
+\end{align*}
+Let $0 \leq a,b < m$. Then b is multiplicative inverse of $a(\text{mod } m)$ iff $ab \equiv 1 (\text{mod } m)$. 
+\begin{alignat*}{3}
+	1 &= sa + tm &&\equiv sa(\text{mod } m) \\
+	&= 15(-48) + 103(7) &&\equiv 15(-48) (\text{mod} 103) \\
+\end{alignat*}
+Now (-48) mod 103 = 55. So, 55 is the multiplicative inverse of 15 mod 103. 
+
+\subsection{} %% 2.b
+We want to find every integer solution $\{x | x \in \Z\}$ to $15x \equiv 11 (\text{mod } 103)$. From above, we already know that the multiplicative inverse of 15 mod 103 is 1. That is $15 \cdot 55 \equiv 1 (\text{mod } 103)$. Therefore if x is a solution, multiplying by 55 we have $55 \cdot 15 \cdot x \equiv 55 \cdot 11 (\text{mod } 103)$. Multiplying the second congruence by x gives $x \equiv 55 \cdot 15 \cdot x (\text{mod } 103)$. Taking these together we have $x \equiv 55 \cdot 11 \equiv 90 (\text{mod } 103)$. This shows that every solution is congruent to 90. Thus, the set of numbers of the form $x = 90 + 103k$ for any k, are exactly solutions of this form. 
+
+\subsection{} %% 2.c
+We want to show that there are no integer solutions to the equation $10x \equiv 3 (\text{mod } 15)$. Applying De Morgan's informs us that there are no integer solutions if and only if every $x \in \Z$ is not a solution. To proceed we will show that this is the case with an argument from contradiction. Assume that x is an integer solution to the equation. 
+
+\subsection{} %% 2.d
+
+
+\section{Two Peas In a Mod} %% Problem 3
+\subsection{} %% 3.a
+Compute $3^{338} \text{mod } 100$ using the efficient modular exponentiation algorithm. The algorithm gives us a solution of the form, $a^{2^{i}} \text{mod } m = (a^{2^{i-1}})^{2^{i}} \text{mod } m$. However, this is only valid for powers of 2. We can rewrite in that form by converting to binary $338_{10} = 101010010_{2}$. Then, find the powers of 2 sum expansion for the binary value $338_{10} = (2^1 + 2^4 + 2^6 + 2^8)$. Now we substitute that into the original equation and expand the bases. 
+\begin{align*}
+	3^{338} \text{mod } 100 &= 3^{(2^1 + 2^4 + 2^6 + 2^8)} \text{mod } 100 \\
+	&= 3^{(2 + 16 + 64 + 256)} \text{mod } 100 \\
+	&=  (3^{2} * 3^{16} * 3^{64} * 3^{256}) \text{mod } 100 \\
+\end{align*}
+Next, calculate mod 100 of the powers of $2 \leq 338$. 
+\begin{alignat*}{4}
+	& 3^2 \text{mod } 100
+	& &&= 9\\ 
+	\\
+	& 3^{16} \text{mod } 100 &&= (3^8)^2 \text{mod } 100 &&&= (3^8 \text{mod } 100)^2 \text{mod } 100 \\
+	& &&= (61)^2 \text{mod } 100 &&&= 3721 \text{mod } 100 \\
+	& &&=  21
+	\\
+	& 3^{64} \text{mod } 100 &&= (3^{32})^2 \text{mod } 100 &&&= (3^{32}\text{mod }100)^2 \text{mod } 100 \\
+	& &&= (41)^2 \text{mod } 100  &&&= 1681 \text{mod } 100 \\
+	& &&= 81 \\
+	\\
+	& 3^{256} \text{mod } 100 &&= (3^{128})^2 \text{mod } 100 &&& (3^{128}\text{mod } 100)^2 \text{mod } 100 \\
+	& &&= (61)^2 \text{mod } 100 &&&= 3721 \text{mod } 100 \\
+	& &&=  21 \\
+\end{alignat*}
+Wrapping up, we now simply substitute these intermediate values back into the above formula and solve. 
+\begin{align*}
+	3^{338} \text{mod } 100 &= (3^{2} * 3^{16} * 3^{64} * 3^{256}) \text{mod } 100 \\
+	&= (9 * 21 * 81 * 21) \text{mod } 100 \\
+	&= (31752) \text{mod } 100 \\
+	&= 89 \\
+\end{align*}
+
+\subsection*{} %% 3.b
+\subsection*{} %% 3.c
+\subsection*{} %% 3.d
+
+\section{Weekend At Cape Mod} %% Problem 4
+\subsection{} %% 4.a
+Prove that, if $a \equiv b (\text{mod } m)$ and $a \equiv c (\text{mod } n)$, then $b \equiv c (\text{mod } d)$, where $d \equiv \text{gcd}(m, n)$.
+Let a, b, c, d, m, and n be arbitrary integers. Assume $a \equiv b (\text{mod } m)$ and $a \equiv c (\text{mod } n)$. Then, by the definition of modulo we can write $m | a - b$ and $n | a - c$ and by the definition of GCD we know that if $d$ is the GCD of $m$ and $n$ that we can say $d | m$ and $d | n$. If $d$ is a factor of $m$ and $n$ then $d$ also evenly divides anything that $m$ and $n$ evenly divides, or $d | a - b$ and $d | a - c$. From the definition of Modulo we can say that $a \equiv b (\text{mod } d)$ and $a \equiv c (\text{mod } d)$. Because Modulo is transitive we can conclude that $a \equiv b \equiv c (\text{mod d})$ and by direct proof say that because a, b, c, d, m, and n were arbitrary that $a \equiv b (\text{mod } d)$ and $a \equiv c (\text{mod } d)$ imply $b \equiv c (\text{mod } d)$. $\qed$
+
+\section{Master of Induction} %% Problem 5
+Prove by induction that $n^3 + 2n$ is divisible by 3 for any $n > 0$ and $n \in \Z$. The base case, $n = 1$ holds, $3 | (1)^3 + 2(1) = 3 | 3 = 1$. Inductive hypothesis, assume $3 | k^3 + 2k$ for an arbitrary integer $k$. Inductive step, prove $3 | (k + 1)^3 + 2(k + 1)$. 
+\begin{align*}
+	3 | (k + 1)^3 2(k + 1) &= \\
+	&= 3 | k^3 + 3k^2 + 3k + 2k + 3 \\
+	&= 3 | (k^3 + 2k) + (3k^2 + 3k + 3) \tag*{Inductive Hypothesis} \\
+	&= 3 | (k^3 + 2k) + 3(k^2 + k + 1)
+\end{align*}
+Thus, because the base case was divisible by 3, the second term in the rearranged equation is always divisible by 3, and k was arbitrary, we've shown by induction that $n^3 + 2n$ is always divisible by 3. $\qed$
+
+\section{Super Colliding Super Inductor} %% Problem 6
+Prove by induction that for all $n \in \R$ and $x \in \Z$ with $x > -2$, the inequality $(2 + x)^n \geq 2^n + n2^{n-1}x$ holds. The base case when $n = 0$ holds, $(2 + x)^{(0)} = 1 \geq 1 = 2^{(0)} + (0)2^{(0)-1}x$. Inductive hypothesis, assume $(2 + x)^k \geq 2^k + k2^{k-1}x$ for an arbitrary real number k. Inductive step, prove $(2 + x)^{(k+1)} \geq 2^{(k+1)} + {(k+1)}2^{k}x$.
+\begin{alignat}{4}
+	(2 + x)^{(k+1)} &= \\
+	(2 + x)^k(2+x) &\geq (2^k + k2^{k-1}x)(2+x) \\
+	(2 + x)^{k+1} &\geq 2^{k+1} + k2^{k}x + 2^{k}x + k2^{k-1}x^2 \\
+	(2 + x)^{k+1} &\geq 2^{k+1} + (k+1)2^{k}x + (k2^{k-1}x^2) \\
+	(2 + x)^{k+1} &\geq 2^{k+1} + (k+1)2^{k}x + (k2^{k-1}x^2) &&\geq 2^{(k+1)} + {(k+1)}2^{k}x
+\end{alignat}
+We begin with the LHS in (1) and factor. In (2) we relate the LHS from (1) with the inductive hypothesis, and if the LHS of the IH has an additional $(2+x)$ term, adding that same term to the RHS of the IH will not break the inequality. After factoring in (3), in (4) we show that what we are trying to prove, $2^{(k+1)} + {(k+1)}2^{k}x$, is embedded in the RHS along with some additional term. Therefore in (5) we show that if the RHS from (4) with an additional term is less than $(2 + x)^{(k+1)}$ then the RHS of (5) without that same additional term must be less than $(2 + x)^{(k+1)}$. Thus, because k was arbitrary, we've shown by induction that the inequality holds for any $n \in \R$. $\qed$
+
+\end{document}

@@ -1,0 +1,408 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath, amsfonts, amsthm, amssymb}  % Some math symbols
+\usepackage[utf8x]{inputenc}
+\usepackage{fullpage}
+\usepackage[x11names, rgb]{xcolor}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{etoolbox}
+\usepackage{enumerate}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{lipsum}
+\usepackage{sectsty}
+\usepackage{verbatim}
+\usetikzlibrary{decorations,arrows,shapes}
+
+%% Define the title contents
+\title{CSE 311 - HW 3}
+\author{Eric Boris, \\Ardi Madadi, Alexander Ayres, Suliman Osman, An Nguyen, Yilin Tsai, Wendy Jiang, Estevan Seyfried, Mia Li, Seonjun Mun}
+\date{October 2019}
+
+%% Left align the title 
+\makeatletter
+\renewcommand{\maketitle}{\bgroup\setlength{\parindent}{0pt}
+\begin{flushleft}
+  \textbf{\@title}
+
+  \@author
+  
+  \@date
+\end{flushleft}\egroup
+}
+\makeatother
+
+%% Set the size of the section header
+\sectionfont{\fontsize{11}{12}\selectfont}
+
+%% Set the size and format of the subsection header
+\subsectionfont{\fontsize{11}{12}\selectfont}
+\renewcommand{\thesubsection}{\thesection (\alph{subsection})}
+
+%% Set the size and format of the subsubsection header
+\subsubsectionfont{\fontsize{9}{10}\selectfont}
+\renewcommand{\thesubsubsection}{\roman{subsubsection}}
+
+%% Define Real and Rational numbers symbol
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+
+%% Redefine rightarrow to imp
+\def\imp{\rightarrow}
+
+%% Define a nested environment using level for formal proof
+\newenvironment{level}%
+{\addtolength{\itemindent}{2em}}%
+{\addtolength{\itemindent}{-2em}}
+
+%% Set enumerate sub list to use numbers instead of letters
+\setlist[enumerate]{label*=\arabic*.}
+
+\begin{comment}
+%% Remove the QED Tombstone symbol from the end of proofs
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{\par
+%  \pushQED{\qed}% <--- remove the QED business
+  \normalfont \topsep6\p@\@plus6\p@\relax
+  \trivlist
+  \item[\hskip\labelsep
+        \itshape
+    #1\@addpunct{.}]\ignorespaces
+}{%
+%  \popQED% <--- remove the QED business
+  \endtrivlist\@endpefalse
+}
+\renewcommand\qedhere{} % to ensure code portability
+\makeatother
+\end{comment}
+
+%%--- Begin the Document ---%%
+
+\begin{document}
+\maketitle
+
+\section{Do Not Iron While Wearing Shirt} %% Problem 1
+\begin{align*}
+	\text{Loves}(x, y) &:= \text{Person x loves activity y.} \\
+	\text{Likes}(x, y) &:= \text{Person x likes activity y.} \\
+	\text{Person}(x) &:= \text{x is a person.} \\
+	\text{Activity}(x) &:= \text{y is an activity.} \\
+\end{align*}
+
+\subsection{Every activity that Bob loves is also loved by someone else.} 
+\subsubsection{Translate}
+$\forall y ((\text{Activity}(y) \land \text{Loves}(Bob, y)) \imp \exists x(P(x) \land (x \neq Bob) \land \text{Loves}(x, y))$
+
+\subsubsection{Negate}
+\begin{align*}
+	&= \neg (\forall y ((\text{Activity}(y) \land \text{Loves}(Bob, y)) \imp \exists x(P(x) \land (x \neq Bob) \land \text{Loves}(x, y))) \tag*{Given} \\
+	&= \forall y ((\text{Activity}(y) \land \text{Loves}(Bob, y)) \land \neg \exists x(P(x) \land (x \neq Bob) \land \text{Loves}(x, y))) \tag*{Negate Implication} \\
+	&= \forall y ((\text{Activity}(y) \land \text{Loves}(Bob, y))) \land \forall x \neg (P(x) \land (x \neq Bob) \land \text{Loves}(x, y)) \tag*{Negate Quantifier} \\
+	&= \forall y ((\text{Activity}(y) \land \text{Loves}(Bob, y)) \land \forall x(\neg P(x) \lor \neg (x \neq Bob) \lor \neg \text{Loves}(x, y))) \tag*{DeMorgan's} \\
+\end{align*}
+
+\subsubsection{Translate}
+No one else loves Bob's favorite activites. 
+
+\subsection{Someone who likes every activity does not love any activity.}
+\subsubsection{Translate to Propositional Logic}
+$\forall x \forall y (P(x) \land \text{Activity}(y) \land (\text{Likes}(x, y) \imp \neg \text{Loves}(x, y)))$
+
+\subsubsection{Negate}
+\begin{align*}
+	&= \neg (\forall x \forall y (P(x) \land \text{Activity}(y) \land (\text{Likes}(x, y) \imp \neg \text{Loves}(x, y))))  \\
+	&= \exists x \exists y \neg (P(x) \land \text{Activity}(y) \land (\text{Likes}(x, y) \imp \neg \text{Loves}(x, y))) \tag*{Negate Quantifier} \\
+	&= \exists x \exists y (\neg P(x) \lor \neg \text{Activity}(y) \lor \neg (\text{Likes}(x, y) \imp \neg \text{Loves}(x, y))) \tag*{DeMorgan's} \\
+	&= \exists x \exists y (\neg P(x) \lor \neg \text{Activity}(y) \lor (\text{Likes}(x, y) \land \neg \neg \text{Loves}(x, y))) \tag*{Negate Implication} \\
+	&= \exists x \exists y (\neg P(x) \lor \neg \text{Activity}(y) \lor (\text{Likes}(x, y) \land \text{Loves}(x, y))) \tag*{Double Negation} \\
+\end{align*}
+
+\subsubsection{Translate to English sentence}
+No activity isn't both liked and loved by someone. 
+
+\section{May Cause Drowsiness} %% Problem 2
+\subsection{} %% 2.a
+\begin{proof}[\textbf{Prove $q \land w$}] \leavevmode
+	\begin{enumerate}
+		\item $p \land q$ \hfill (Given)
+		\item $p \imp r$ \hfill (Given)
+		\item $r \imp (s \land w)$ \hfill (Given)
+		\item $\neg p \lor r$ \hfill (Law of Implication - 2)
+		\item $p \imp (s \land w)$ \hfill (Hypothetical Syllogism - 2, 3)
+		\item $p$ \hfill (Simplification - 1)
+		\item $s \land w$ \hfill (Modus Ponens - 5, 6)
+		\item $w$ \hfill (Simplification - 8) 
+		\item $q$ \hfill (Simplification - 1) 
+		\item $q \land w$ \hfill (Conjunction - 8, 9)
+	\end{enumerate}
+\end{proof}
+
+\subsection{} %% 2.b
+\begin{proof}[\textbf{Prove $p \imp s$}] \leavevmode
+	\begin{enumerate}
+		\item $p \imp q$ \hfill (Given)
+		\item $r \imp \neg p$ \hfill (Given)
+		\item $(\neg r \land q) \imp s$ \hfill (Given) 
+		\item $\neg \neg p \imp \neg r$ \hfill (Contrapositive - 2)
+		\item $p \imp \neg r$ \hfill (Double Negative - 4) 
+		\begin{enumerate}
+		\begin{level}
+			\item $p$ \hfill (Assumption)
+			\item $\neg r$ \hfill (Modus Ponens - 5, 5.1)
+			\item $q$ \hfill (Modus Ponens - 1, 5.1)
+			\item $\neg r \land q$ \hfill (Conjunction - 5.2, 5.3)
+		\end{level}
+		\end{enumerate}
+		\item $p \imp (\neg r \land q)$ \hfill (Direct Proof Rule - 5.4)
+		\item $p \imp s$ \hfill (Hypothetical Syllogism - 3, 6)
+	\end{enumerate}
+\end{proof}
+
+\subsection{} %% 2.c
+\begin{proof}[\textbf{Prove $p \imp ((q \imp r) \land (r \imp q))$}] \leavevmode
+	\begin{enumerate}
+		\item $((p \land q) \imp (p \land r)) \land ((p \land r) \imp (p \land q))$ \hfill (Given)
+		\item $(p \land q) \imp (p \land r)$ \hfill (Simplification - 1)
+		\item $(p \land r) \imp (p \land q)$ \hfill (Simplification - 1)
+		\item $\neg (p \land q) \lor (p \land r)$ \hfill (Law of Implication - 2)
+		\item $(\neg p \lor \neg q) \lor (p \land r)$ \hfill (DeMorgan's - 4)
+		\item $(\neg q \lor \neg p) \lor (p \land r)$ \hfill (Commutativity - 5)
+		\item $\neg q \lor (\neg p \lor (p \land r))$ \hfill (Associativity - 6)
+		\item $\neg q \lor ((\neg p \lor p) \land (\neg p \lor r))$ \hfill (Distribution - 7)
+		\item $\neg q \lor ((T) \land (\neg p \lor r))$ \hfill (Negation - 8)
+		\item $\neg q \lor (\neg p \lor r)$ \hfill (Identity - 9)
+		\item $\neg q \lor (r \lor \neg p)$ \hfill (Commutativity - 10)
+		\item $(\neg q \lor r) \lor \neg p$ \hfill (Associativity - 11)
+		\item $\neg p \lor (\neg q \lor r)$ \hfill (Commutativity - 12)
+		\item $p \imp (\neg q \lor r)$ \hfill (Law of Implication - 13)
+		\item $p \imp (q \imp r)$ \hfill (Law of Implication - 14)
+		
+		\item $\neg (p \land r) \lor (p \land q)$ \hfill (Law of Implication - 2)
+		\item $(\neg p \lor \neg r) \lor (p \land q)$ \hfill (DeMorgan's - 17)
+		\item $(\neg r \lor \neg p) \lor (p \land q)$ \hfill (Commutativity - 18)
+		\item $\neg r \lor (\neg p \lor (p \land q))$ \hfill (Associativity - 19)
+		\item $\neg r \lor ((\neg p \lor p) \land (\neg p \lor q))$ \hfill (Distribution - 19)
+		\item $\neg r \lor ((T) \land (\neg p \lor q))$ \hfill (Negation - 20)
+		\item $\neg r \lor (\neg p \lor q)$ \hfill (Identity - 21)
+		\item $\neg r \lor (q \lor \neg p)$ \hfill (Commutativity - 22)
+		\item $(\neg r \lor q) \lor \neg p$ \hfill (Associativity - 23)
+		\item $\neg p \lor (\neg r \lor q)$ \hfill (Commutativity - 23)
+		\item $p \imp (\neg r \lor q)$ \hfill (Law of Implication - 25)
+		\item $p \imp (r \imp q)$ \hfill (Law of Implication - 26)
+		\item $p$ \hfill (Assumption)
+			\begin{enumerate}
+			\begin{level}
+				\item $\neg q \imp r$ \hfill (DeMorgan's - 15, 28)
+				\item $\neg r \imp q$ \hfill (DeMorgan's - 27, 28)
+				\item $(\neg q \imp r) \land (\neg r \imp q)$ \hfill (Conjunction - 28.1, 28.2)
+			\end{level}
+			\end{enumerate}
+		\item $p \imp ((\neg q \imp r) \land (\neg r \imp q))$ \hfill (Direct Proof Rule - 28.3)
+	\end{enumerate}
+\end{proof}
+
+\section{Contents Under Pressure} %% Problem 3
+\subsection{} %% 3.a
+\begin{proof}[\textbf{Prove $p \land (s \lor t)$}] \leavevmode
+ 	\begin{enumerate}
+		\item $p \land (q \lor r)$ \hfill (Given)
+		\item $q \imp (r \land s)$ \hfill (Given)
+		\item $r \imp (r \land s)$ \hfill (Given)
+		\item $q \lor r$ \hfill (Simplification - 1)
+		\item $r \land s$ \hfill (Proof by Cases - 2, 3, 4)
+		\item $s$ \hfill (Simplification - 5) 
+		\item $s \lor t$ \hfill (Addition - 6)
+		\item $p$ \hfill (Simplification - 1)
+		\item $p \land (s \lor t)$ \hfill (Conjunction - 7, 8)
+	\end{enumerate}
+\end{proof}
+
+\subsection{} %% 3.b
+\begin{proof}[\textbf{Prove $q$}] \leavevmode
+ 	\begin{enumerate}
+		\item $p \lor q$ \hfill (Given)
+		\item $\neg p$ \hfill (Given)
+		\item $q$ \hfill (Disjunctive Syllogism - 1, 2)
+		\item $\neg q \lor q$ \hfill (Law of Excluded Middle - 3)
+		\item $q \imp q$ \hfill (Law of Implication - 4)
+		\item $\neg p \lor q$ \hfill (Addition - 2, 3)
+		\item $p \imp q$ \hfill (Law of Implication - 6)
+		\item $q$ \hfill (Proof by Cases - 1, 5, 7)
+	\end{enumerate}
+\end{proof}
+
+\subsection{} %% 3.c
+Although they reach the same conclusion, Elim $\lor$ is a more direct method and requires fewer givens. In other words, it's more powerful. 
+
+\section{Not Intended for Human Consumption} %% Problem 4
+\subsection{} %% 4.a
+\begin{proof}[\textbf{Prove $\exists x (Q(x) \imp \forall y Q(y))$}] \leavevmode
+ 	\begin{enumerate}
+		\item $\neg (\forall y Q(y))$ \hfill (Given)
+		\item $\exists y \neg Q(y)$ \hfill (Quantifier Negation - 1)
+		\item $\neg Q(c)$ for some c \hfill (Existential Instantiation - 2)
+		\item $\neg Q(c) \lor \forall y Q(y)$ \hfill (Addition - 3)
+		\item $Q(c) \imp \forall y Q(y)$ \hfill (Law of Implication - 4)
+		\item $\exists x (Q(x) \imp \forall y Q(y))$ \hfill (Existential Generalization - 5)
+	\end{enumerate}
+\end{proof}
+
+\subsection{} %% 4.b
+\begin{proof}[\textbf{Prove $\exists x (Q(x) \imp \forall y Q(y))$}] \leavevmode
+ 	\begin{enumerate}
+		\item $\forall y Q(y)$ \hfill (Given)
+		\item $\neg \forall y Q(y) \lor \forall y Q(y)$ \hfill (Law of Excluded Middle - 1)
+		\item $\exists y \neg Q(y) \lor \forall y Q(y)$ \hfill (Quantifier Negation - 2)
+		\item $\neg Q(c) \lor \forall y Q(y)$ for some c \hfill (Existential Instantiation - 3)
+		\item $Q(c) \imp y Q(y)$ \hfill (Law of Implication - 4)
+		\item $\exists x (Q(x) \imp \forall y Q(y))$ \hfill (Existential Generalization - 5)
+	\end{enumerate}
+\end{proof}
+
+\subsection{} %% 4.c
+Using Proof by Cases we say that we have either the given in 4a or the given in 4b. In both of those steps we've also shown that each implies the conclusion $\exists x (Q(x) \imp \forall y Q(y))$. By the law of excluded middle we also note that when a proposition or it's negation is always true, a tautology. Thus, we show that because both 4a and 4b imply the conclusion and they are a tautology, what they imply is also a tautology. $\qed$ 
+
+\section{Keep Away From Small Children} %% Problem 5
+$\text{Square} := \exists k (n = k^2)$
+
+\subsection{} %% 5.a
+$\forall n \forall m (\text{Square}(n) \land \text{Square}(m) \imp \text{Square}(nm))$
+
+\subsection{} %% 5.b
+\begin{proof}[\textbf{Prove $\forall n \forall m (\text{Square}(n) \land \text{Square}(m) \imp \text{Square}(nm))$}] \leavevmode
+ 	\begin{enumerate}
+		\item Let Square($a$) and Square($b$) be arbitrary square integers.  
+		\begin{enumerate}
+		\begin{level}
+			\item $\text{Square}(a) \land \text{Square}(b)$ \hfill (Assume $a$ and $b$)
+			\item $\text{Square}(a)$ \hfill (Simplification - 1.1)
+			\item $\text{Square}(b)$ \hfill (Simplification - 1.1)
+			\item $\exists x (a = x^2)$ \hfill (Definition of Square - 1.2)
+			\item $\exists y (b = y^2)$ \hfill (Definition of Square - 1.3)
+			\item $a = i^2$ for some i \hfill (Existential Instantiation - 1.4)
+			\item $b = j^2$ for some j \hfill (Existential Instantiation - 1.5)
+			\item $ab = i^2 j^2 = (ij)^2 = k^2$ \hfill (Algebra - 1.7)
+			\item $\exists k(ab = k^2)$	\hfill (Existential Generalization - 1.8)
+			\item $\text{Square}(ab)$ \hfill (Definition of Square - 1.9) 
+		\end{level}
+		\end{enumerate}
+		\item $\text{Square}(a) \land \text{Square}(b) \imp \text{Square}(ab)$ \hfill (Direct Proof Rule - 1.10) 
+		\item $\exists n \exists m (\text{Square}(n) \land \text{Square}(m) \imp \text{Square}(nm))$ \hfill (Universal Generalization - 2)
+	\end{enumerate}
+\end{proof}
+
+\subsection{} %% 5.c
+Let $a$ and $b$ be arbitrary square integers. 
+Then by definition, $a = x^2$ for some integer $x$ and $b = y^2$ for some integer y. Multiplying both sides we get $nm = i^2 j^2 = (ij)^2 = k^2$. So nm is, by definition, square. Since $a$ and $b$ were arbitrary, we have shown that product of square number is square.$\qed$
+
+\section{Extra Credit: Some Assembly Required} %% Problem 6
+\subsection{} %% 6.a
+\begin{align*}
+	R_1 &:= \text{int} \times \text{float} \\
+	R_2 &:= \text{int} \imp \text{String} \\
+	R_3 &:= \text{String} \imp (\text{char} \times \text{boolean}) \\
+	R_4 &:= \text{CALL}(\text{LEFT}(R_1), R_2) \tag*{// String} \\
+	R_5 &:= \text{CALL}(R_4, R_3) \tag*{// (char $\times$ boolean)} \\
+	R_6 &:= \text{RIGHT}(R_1) \tag*{// float} \\
+	R_7 &:= \text{RIGHT}(R_5) \tag*{// boolean} \\
+	R_8 &:= \text{PAIR}(R_6, R_7) \tag*{// (float $\times$ boolean)} \\
+\end{align*}
+
+\subsection{} %% 6.b
+Definitions
+\begin{align*}
+	p &:= \text{int} \\
+	q &:= \text{float} \\
+	r &:= \text{String} \\
+	s &:= \text{char} \\
+	t &:= \text{boolean} \\
+\end{align*}
+Initial translation
+\begin{align*}
+	R_1 &:= p \land q \\
+	R_2 &:= p \imp r \\
+	R_3 &:= r \imp (s \land t) \\
+	R_4 &:= \text{CALL}(\text{LEFT}(R_1), R_2) \tag*{// $r$} \\
+	R_5 &:= \text{CALL}(R_4, R_3) \tag*{// ($s \land t$)} \\
+	R_6 &:= \text{RIGHT}(R_1) \tag*{// $q$} \\
+	R_7 &:= \text{RIGHT}(R_5) \tag*{// $t$} \\
+	R_8 &:= \text{PAIR}(R_6, R_7) \tag*{// ($q \land t$)} \\
+\end{align*}
+Taking it further
+\begin{proof}[\textbf{Prove $q \land t$}] \leavevmode
+ 	\begin{enumerate}
+		\item $p \land q$ \hfill (Given)
+		\item $p \imp r$ \hfill (Given)
+		\item $r \imp (s \land t)$ \hfill (Given)
+		\item $p$ \hfill (Simplification - 1)
+		\item $s \land t$ \hfill (Hypothetical Syllogism - 3, 4)
+		\item $q$ \hfill (Simplification - 1)
+		\item $t$ \hfill (Simplification - 5)
+		\item $q \land t$ \hfill (Conjunction - 6, 7)
+	\end{enumerate}
+\end{proof}
+
+\subsection{} %% 6.c
+\begin{align*}
+	R_1 &:= \text{int} \times (\text{float} + \text{String}) \\
+	R_2 &:= \text{float} \imp (\text{String} \times \text{char}) \\
+	R_3 &:= \text{String} \imp (\text{String} \times \text{char}) \\
+	R_4 &:= \text{LEFT}(R_1) \tag*{// \text{int}} \\
+	R_5 &:= \text{RIGHT}(R_1) \tag*{// (\text{float} + \text{String})} \\
+	R_6 &:= \text{SWITCH}(R_5, R_2, R_3) \tag*{// (\text{String} $\times$ \text{char})} \\
+	R_7 &:= \text{RIGHT}(R_6) \tag*{// char} \\
+	R_8 &:= \text{CASE}(R_7) \tag*{// (char + boolean)} \\
+	R_9 &:= \text{PAIR}(R_4, R_8) \tag*{// int $\times$ (char + boolean)} \\
+\end{align*}
+
+\subsection{} %% 6.d
+Initial translation
+\begin{align*}
+	R_1 &:= p \land (q \lor r) \\
+	R_2 &:= q \imp (r \land s) \\
+	R_3 &:= r \imp (r \land s) \\
+	R_4 &:= \text{LEFT}(R_1) \tag*{// $p$} \\
+	R_5 &:= \text{RIGHT}(R_1) \tag*{// $(q \lor r)$} \\
+	R_6 &:= \text{SWITCH}(R_5, R_2, R_3) \tag*{// $(r \land s)$} \\
+	R_7 &:= \text{RIGHT}(R_6) \tag*{// $s$} \\
+	R_8 &:= \text{CASE}(R_7) \tag*{// $(s \lor t)$} \\
+	R_9 &:= \text{PAIR}(R_4, R_8) \tag*{// $p \land (s \lor t)$} \\
+\end{align*}
+Taking it further
+\begin{proof}[\textbf{Prove $q \land t$}] \leavevmode
+ 	\begin{enumerate}
+		\item $p \land (q \lor r)$ \hfill (Given)
+		\item $q \imp (r \land s)$ \hfill (Given)
+		\item $r \imp (r \land s)$ \hfill (Given)
+		\item $p$ \hfill (Simplification - 1)
+		\item $q \lor r$ \hfill (Simplification - 1)
+		\item $r \land s$ \hfill (Proof by Cases - 5, 2, 3)
+		\item $s$ \hfill (Simplification - 6)
+		\item $s \lor t$ \hfill (Addition - 7)
+		\item $p \land (s \lor t)$ \hfill (Conjunction - 4, 8)
+	\end{enumerate}
+\end{proof}
+
+\subsection{} %% 6.e
+We would perform the same task of translating from instruction to rules of inference, but in reverse. In other words:
+\begin{itemize}
+	\item Step numbers become register numbers
+	\item Atomic propositions become data types
+	\item $\lor$ becomes +
+	\item $\land$ becomes $\times$
+	\item Simplification splits and becomes LEFT() and RIGHT()
+	\item Proof by Cases becomes SWITCH()
+	\item Addition becomes CASE()
+	\item Conjunction becomes PAIR()
+	\item Modus Ponens becomes CALL()
+	\item Hypothetical Syllogism becomes a nested CALL(CALL())
+	\item Step description column switches place with step result column
+\end{itemize}
+
+\subsection{} %% 6.f
+We would need to add some way to nest ideas. This could be done with subroutine calls or jumps. Perhaps we would say SUBCALL($R_1$) where SUBCALL() returns a function produced by the argument $R_1$. Or we would say JUMP($R_1$) where we jump to a new register location with $R_1$ as a value to prove and when the result is proved RET($R_{1.n}$) return with the result to be assigned. 
+
+\end{document}
